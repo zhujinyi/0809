@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><title>Title</title></head><body><p>sdssfd</p><input style="display: none" type=text class=txt></body></html><script>
+    var oP=document.getElementsByTagName("p")[0];
+    var txt=document.getElementsByClassName("txt")[0];
+    oP.ondblclick=function () {
+        var that=this;
+        that.style.display="none"
+
+        txt.style.display="block"
+        txt.value=oP.innerHTML;
+
+        txt.focus();
+
+
+        txt.onblur=function () {
+            that.style.display="block";
+
+            txt.style.display="none";
+
+            if(!txt.value) return;
+
+            oP.innerHTML=txt.value;
+        }
+
+    }
+
+</script>

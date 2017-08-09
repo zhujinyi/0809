@@ -1,0 +1,20 @@
+{
+  "name": "gulp01",
+  "description": "",
+  "main": "gulpfile.js",
+  "authors": [
+    "zhujinyi <1309910059@qq.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "store2": "store#^2.5.1"
+  }
+}
