@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><title>Title</title></head><body><input type=button id=btn value=播放><audio src=alert.mp3 id=music></audio><script>
+    var btn=document.getElementById("btn");
+    var music=document.getElementById("music");
+    btn.onclick=function () {
+        if(this.value == "播放"){
+            music.play();
+            this.value="暂停";
+        }else{
+            music.pause();
+            this.value="播放";
+        }
+    }
+</script></body></html>

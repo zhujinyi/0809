@@ -31,6 +31,7 @@
     function  init() {
         task_list=store.get("gg") || [];
         createHtml(); //生成thml
+        clock_time();
     }
 
 //把对像push数组里面
@@ -50,9 +51,29 @@
     function createHtml() {
         var $task_list=$(".task-list");
         $task_list.html(null); //清空
+        var complated_items=[];
         for(var i=0; i<task_list.length; i++){
-            var $item=bindHtml(task_list[i],i);
-            $task_list.append($item);
+            if(task_list[i].complated){
+                complated_items[i]=task_list[i];
+
+            }else{
+                var $item=bindHtml(task_list[i],i);
+                $task_list.append($item);
+                clock_time($item);
+            }
+
+        }
+        for(var j=0;j<complated_items.length;j++){
+            if(complated_items[j]){
+
+                $item=bindHtml(complated_items[j],j);
+                $item.addClass("complated");
+                $task_list.append($item);
+
+            }
+
+
+
         }
         bindDelete();  //删除任务列表
         task_list_detail();  //详细
@@ -70,7 +91,7 @@
             '<span class="detail r-main">详细</span>'+
             '</div>'+
             '</li>';
-        return str;
+        return $(str);
     }
 
     /*------------------------------删除-------------------------------------*/
@@ -85,10 +106,23 @@
     };
 //删除功能
     function remove_task_list(index){
-        var off = confirm("你确定要删除么");
-        if(!off) return;
-        task_list.splice(index,1);
-        refresh_task_list(); //更新
+        var off=false;
+        $(".Alert").show();
+        $(".primary.confirm").bind("click",function () {
+            off=true;
+            $(".Alert").hide();
+            if(!off) return;
+            task_list.splice(index,1);
+            refresh_task_list(); //更新
+            $(".primary.confirm").unbind("click");
+
+        })
+        $(".cancel").click(function () {
+            off=false;
+            $(".Alert").hide();
+        })
+       // var off = confirm("你确定要删除么");
+
     }
 //更新 本地存储
     function refresh_task_list(){
@@ -120,7 +154,7 @@
             '</div>'+
             '<div class="remind input-item">'+
             '<label for="b">提醒时间</label>'+
-            '<input id="b" class="datetime" type="date" value="'+data.datetime+'">'+
+            '<input id="b" class="datetime" type="text" value="'+(data.datetime ||"")+'">'+
             '</div>'+
             '<div class="input-item">'+
             '<button class="ut-data">更新</button>'+
@@ -130,6 +164,9 @@
             '</div>';
 
         $(".container .task-list").after(str);
+
+        $.datetimepicker.setLocale('ch');
+        $('.datetime').datetimepicker();
         remove_detail(); //删除弹框
 
         up_task(index); //提交详细任务
@@ -223,6 +260,8 @@
                 up_data({complated:true},index)
 
             }
+
+            createHtml();
         });
 
 
@@ -241,6 +280,65 @@
     * */
 
     //todoMvc
+    var timer=null
+    // clock_time()
+    
+    function clock_time(obj) {
+        if(!$(obj)[0]) return;
+
+        clearInterval($(obj)[0].timer)
+        $(obj)[0].timer=setTimeout(function () {
+            var start_time=new Date().getTime();
+
+            var $item=task_list;
+            for(var i=0;i<$item.length;i++){
+                if($item[i].complated || !$item[i].datetime || $item[i].off) continue;
+
+                var end_time=(new Date($item[i].datetime)).getTime();
+
+
+
+
+
+
+                if(end_time - start_time <=1){
+                    clearInterval($(obj)[0].timer);
+                    // console.log("播放音乐");
+
+                    // if($item[i].datetime == $item[i].datetime)
+
+                    play_mucis();
+
+                    show_alert(task_list[i],i);
+
+
+                }
+            }
+
+        },1000)
+        
+    }
+
+
+    function show_alert(item,i) {
+        $(".msg").show();
+        $(".msg-content").text(item.content)
+
+        $(".msg-btn").click(function () {
+
+            up_data({off:true,num:5},i);
+
+
+            $(".msg").hide();
+        })
+
+
+    }
+    function play_mucis() {
+        var music=document.getElementById("music");
+        music.play();
+    }
+    
 
 }());
 
